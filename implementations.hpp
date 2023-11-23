@@ -434,3 +434,55 @@ void MyVector<T>::emplace_back(T val)
     } 
     ptr[v_size++] = val;  //emplacing the element from the end of vector
 }
+
+
+
+/////////////BITVECTOR//////////////
+
+//**CONSTRUCTORS**
+
+//DEFAULT CONSTRUCTOR
+MyVector<bool>::MyVector()
+{
+    ptr = nullptr;
+    v_size = 0;
+    v_cap = 0;
+}
+
+//PARAMETRIZED CONSTRUCTOR
+MyVector<bool>::MyVector(bool val, size_t quantity)
+{
+    v_size = quantity;
+    v_cap = v_size;
+    int new_cap = 0;
+    while(quantity > size)
+    {
+        new_cap++;
+        quantity /= size;
+    }
+
+    ptr = new size_t[new_cap + 1];
+
+    if(val == true)
+    {
+      for(size_t i = 0; i < v_size; ++i)
+        {
+            for(size_t j = 0; j < size; ++j)
+            {
+                ptr[i] |= 1 << j;
+            }
+        }  
+    }
+    
+}
+
+
+//***OPERATORS***
+
+
+//***METHODS***
+
+
+
+
+

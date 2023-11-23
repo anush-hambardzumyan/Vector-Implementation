@@ -2,6 +2,7 @@
 #define PRO_HPP
 
 #include <iostream>
+int size = sizeof(size_t) * 8;
 
 template <typename T>
 class MyVector
@@ -51,6 +52,35 @@ class MyVector
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const MyVector<T>& obj);
+
+
+
+/////////////////////////BITVECTOR///////////////
+
+template <>
+class MyVector<bool>
+{
+    public:
+    //CONSTRUCTORS AND DESTRUCTOR
+        MyVector();
+        MyVector(bool, size_t);
+        MyVector(std::initializer_list<bool> list);
+        MyVector(const MyVector& other);
+        MyVector(MyVector&& other);
+        ~MyVector();
+
+//METHODS
+        void print();
+        void allocator();
+        int size();
+        int max_size();
+
+    private:
+    //MEMBERS
+        size_t v_size;
+        size_t v_cap;
+        size_t* ptr;
+};
 
 #include "implementations.hpp"
 
