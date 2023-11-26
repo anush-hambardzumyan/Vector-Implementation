@@ -2,11 +2,27 @@
 
 int main()
 {
-    MyVector<int> vec;
-    MyVector<int> vec0 (0,10);
-    MyVector<int> vec1 {2,3,4} ;
-    //MyVector<int> vec2(move(vec1));
-    vec0.print();
-    std::cout << vec0;
-    //vec2.print();
+    // MyVector<bool> vec;
+    // vec.push_back(1);
+    // vec.push_back(0);
+    // vec.push_back(0);
+    // vec.push_back(0);
+    // vec.push_back(0);
+    // vec.push_back(1);
+    // vec.print();
+    // vec.insert(2,1);
+    // //vec.push_back(1);
+    // vec.print();
+    // vec.pop_back();
+    // vec.print();
+    // std::cout << vec.size();
+
+    MyVector<int> vec1(2,10);
+    MyVector<int> vec2 (4,7);
+
+    std::cout << vec1;
+    std::cout << vec2;
+    vec1.swap(vec2);
+    std::cout << vec1;
+    std::cout << vec2;
 }

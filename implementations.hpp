@@ -1,5 +1,7 @@
 #include "prototypes.hpp"
 
+enum noname {BITCOUNT = sizeof(size_t) * 8};
+
 //***CONSTRUCTORS***
 
     //DEFAULT CONSTRUCTOR
@@ -42,12 +44,12 @@
         v_cap = v_size;
         ptr = new T[v_cap];  
 
-        const T* arr = list.begin();
         for (size_t i = 0; i < v_size; ++i)
         {
-            ptr[i] = arr[i];
+            ptr[i] = *(list.begin() + i);
         }
     }
+
 
     //MOVE CONSTRUCTOR
     template <typename T>
@@ -89,7 +91,7 @@ T& MyVector<T>::operator[] (int index)
     return ptr[index];
 }
 
-//COPY ASSIGNMENT
+//MOVE ASSIGNMENT
 template <typename T>
 MyVector<T>& MyVector<T>::operator=(MyVector&& other)     
 {
@@ -106,7 +108,7 @@ MyVector<T>& MyVector<T>::operator=(MyVector&& other)
     return *this;
 }
 
-//MOVE ASSIGNMENT
+//COPY ASSIGNMENT
 template <typename T>
 MyVector<T>& MyVector<T>::operator=(const MyVector& other)    
 {
@@ -126,7 +128,7 @@ MyVector<T>& MyVector<T>::operator=(const MyVector& other)
 
 //OSTREAM OPERATOR
 template <typename T>
-std::ostream& operator<<(std::ostream& os, MyVector<T>& obj) 
+std::ostream& operator<<(std::ostream& os,MyVector<T>& obj) 
 {
     for (int i = 0; i < obj.size(); ++i)
     {
@@ -256,25 +258,26 @@ T& MyVector<T>::at(int pos)
     else
     {
         std::cout << "unvalid operation: " <<std::endl;
+        exit(0);
     }
 }
 
 template <typename T>
 T& MyVector<T>::front()
 {
-    return &ptr[0];
+    return ptr[0];
 }
 
 template <typename T>
 T& MyVector<T>::back()
 {
-    return &ptr[v_size - 1];
+    return ptr[v_size - 1];
 }
 
 template <typename T>
 T* MyVector<T>::data()
 {
-    return (v_size == 0) ? nullptr : ptr;
+    return ptr;
 }
 
 template <typename T>
@@ -367,12 +370,12 @@ void MyVector<T>::erase(int pos)
         ptr = ptrr;
         ptrr = nullptr;
         --v_size;
-        --v_cap;  // Decrease the capacity since you are removing an element
     } 
+
     else 
     {
         std::cout << "Invalid operation: " << std::endl;
-        return;
+        exit(0);
     }
 }
 
@@ -435,6 +438,13 @@ void MyVector<T>::emplace_back(T val)
     ptr[v_size++] = val;  //emplacing the element from the end of vector
 }
 
+template <typename T> 
+void MyVector<T>::swap(MyVector& x)
+{
+    std::swap(this -> ptr , x.ptr);
+    std::swap(this -> v_size , x.v_size);
+    std::swap(this -> v_cap , x.v_cap);
+}
 
 
 /////////////BITVECTOR//////////////
@@ -449,40 +459,174 @@ MyVector<bool>::MyVector()
     v_cap = 0;
 }
 
-//PARAMETRIZED CONSTRUCTOR
-MyVector<bool>::MyVector(bool val, size_t quantity)
+//DESTRUCTOR
+MyVector<bool>::~MyVector()
 {
-    v_size = quantity;
-    v_cap = v_size;
-    int new_cap = 0;
-    while(quantity > size)
+    if(ptr != nullptr)
     {
-        new_cap++;
-        quantity /= size;
+        delete[] ptr;
     }
-
-    ptr = new size_t[new_cap + 1];
-
-    if(val == true)
-    {
-      for(size_t i = 0; i < v_size; ++i)
-        {
-            for(size_t j = 0; j < size; ++j)
-            {
-                ptr[i] |= 1 << j;
-            }
-        }  
-    }
-    
 }
-
 
 //***OPERATORS***
 
 
 //***METHODS***
 
+void MyVector<bool>::allocator()
+{
+    ptr = new size_t[1];
+    v_size = 0;
+    v_cap = BITCOUNT;
+    user_cap = BITCOUNT;
+}
 
+void MyVector<bool>::push_back(bool val) 
+{
+    if(ptr == nullptr)
+    {
+        allocator();
+    }
 
+    if(v_size + 1 == v_cap)
+    {
+        size_t* ptr1 = new size_t[v_cap/BITCOUNT + 1];
+        for(size_t i = 0; i < v_cap/BITCOUNT; ++i)
+        {
+            ptr1[i] = ptr[i];
+        }
+        delete[] ptr;
+        ptr = ptr1;
+        ptr1 = nullptr;
+        v_cap *= 2;
+        user_cap = v_cap;
+    }
 
+    if (val) 
+    {
+        size_t x = 1 << (v_size % BITCOUNT);
+        ptr[v_size / BITCOUNT] |= x;
+    }
 
+    v_size++;
+};
+
+void MyVector<bool>::print()
+{
+    size_t x = 1 << (BITCOUNT - 1);
+
+    for (size_t i = v_size; i > 0; --i) 
+    {
+        size_t index = (i - 1) / BITCOUNT;
+        size_t offset = (i - 1) % BITCOUNT;
+        bool bit = (ptr[index] >> offset) & 1;
+        std::cout << bit;
+    }
+    std::cout << std::endl;
+}
+
+size_t MyVector<bool>::size()
+{
+    return v_size;
+}
+
+int MyVector<bool>::max_size()
+{
+    return 1073741823;
+}
+
+size_t MyVector<bool>::capacity()
+{
+    return user_cap;
+}
+
+bool MyVector<bool>::empty() 
+{
+    return v_size == 0;
+}
+
+void MyVector<bool>::shrink_to_fit() 
+{
+    user_cap = v_size;
+}
+
+void MyVector<bool>::pop_back()
+{
+    if(v_size == 0)
+    {
+        std::cout << "unvalid operation" << std::endl;
+        exit(0);
+    } 
+
+    ptr[v_cap/BITCOUNT - 1] &= ~(1 << (v_size));
+    v_size -- ;
+}
+
+void MyVector<bool>::reserve(size_t newcap)
+{
+    if(newcap > v_size)
+    {
+        if(newcap % BITCOUNT == 0)
+        {
+            size_t *ptrr = new size_t[newcap/BITCOUNT];
+            for(int i = 0; i < newcap/BITCOUNT ; ++i)
+            {
+                ptrr[i] = ptr[i];
+            }
+            delete[] ptr;
+            ptr = ptrr;
+            ptrr = nullptr;
+        }
+
+        else
+        {
+            size_t *ptrr = new size_t[(newcap/BITCOUNT) + 1];
+            for(int i = 0 ; i < newcap/BITCOUNT + 1 ; ++i)
+            {
+                ptrr[i] = ptr[i];
+            }
+            delete[] ptr;
+            ptr = ptrr;
+            ptrr = nullptr;
+        }
+    }
+}
+
+void MyVector<bool>::insert(int pos , bool val)
+{
+    if(pos > v_size)
+    {
+        std::cout << "unvalid operation:" << std::endl;
+        exit(0);
+    }
+
+    if ((v_size + 1) % BITCOUNT == 0) 
+    {
+        size_t* ptr1 = new size_t[(v_cap / BITCOUNT) + 1];
+        for (size_t i = 0; i < v_cap / BITCOUNT; ++i) 
+        {
+            ptr1[i] = ptr[i];
+        }
+        delete[] ptr;
+        ptr = ptr1;
+        ptr1 = nullptr;
+        v_cap *= 2;
+        user_cap = v_cap;
+    }
+
+    for (size_t i = v_size; i > pos; --i) 
+    {
+        size_t index = (i - 1) / BITCOUNT;
+        size_t offset = (i - 1) % BITCOUNT;
+        bool bit = (ptr[index] >> offset) & 1;
+        size_t newBit = bit ? 1 << offset : 0;
+        ptr[index + 1] |= newBit;
+    }
+
+    size_t index = pos / BITCOUNT;
+    size_t offset = pos % BITCOUNT;
+    size_t x = 1 << offset;
+    ptr[index] |= (val ? x : 0);
+
+    ++v_size;
+}

@@ -1,8 +1,7 @@
-#ifndef PRO_HPP
-#define PRO_HPP
+#ifndef PROTOTYPES_HPP
+#define PROTOTYPES_HPP
 
 #include <iostream>
-int size = sizeof(size_t) * 8;
 
 template <typename T>
 class MyVector
@@ -42,6 +41,7 @@ class MyVector
         void clear();
         void emplace(int,T);
         void emplace_back(T);
+        void swap(MyVector&);
 
     private:
     //MEMBERS
@@ -55,14 +55,14 @@ std::ostream& operator<<(std::ostream& os, const MyVector<T>& obj);
 
 
 
-/////////////////////////BITVECTOR///////////////
+/////////////////////////BITVECTOR//////////////////////
 
 template <>
 class MyVector<bool>
 {
     public:
     //CONSTRUCTORS AND DESTRUCTOR
-        MyVector();
+        MyVector(); 
         MyVector(bool, size_t);
         MyVector(std::initializer_list<bool> list);
         MyVector(const MyVector& other);
@@ -70,15 +70,32 @@ class MyVector<bool>
         ~MyVector();
 
 //METHODS
-        void print();
+        void print(); 
         void allocator();
-        int size();
+        size_t size();
         int max_size();
+        void resize(size_t);
+        size_t capacity();
+        bool empty();
+        void reserve(size_t);
+        void shrink_to_fit();
+        size_t& at(int);
+        size_t& front();
+        size_t& back();
+        size_t* data();
+        void push_back(bool);
+        void pop_back();
+        void insert(int,bool);
+        void erase(int);
+        void clear();
+        void emplace(int,bool);
+        void emplace_back(bool);
 
     private:
-    //MEMBERS
+//MEMBERS
         size_t v_size;
         size_t v_cap;
+        size_t user_cap;
         size_t* ptr;
 };
 
