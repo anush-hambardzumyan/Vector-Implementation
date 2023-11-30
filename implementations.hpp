@@ -50,7 +50,6 @@ enum noname {BITCOUNT = sizeof(size_t) * 8};
         }
     }
 
-
     //MOVE CONSTRUCTOR
     template <typename T>
     MyVector<T>::MyVector(MyVector&& list)
@@ -84,63 +83,64 @@ enum noname {BITCOUNT = sizeof(size_t) * 8};
 
 //***OPERATORS***
 
-//SUBSCRIPT OPERATOR
-template <typename T>
-T& MyVector<T>::operator[] (int index)
-{
-    return ptr[index];
-}
-
-//MOVE ASSIGNMENT
-template <typename T>
-MyVector<T>& MyVector<T>::operator=(MyVector&& other)     
-{
-    if (this != &other) 
+    //SUBSCRIPT OPERATOR
+    template <typename T>
+    T& MyVector<T>::operator[] (int index)
     {
-        delete[] ptr;
-        v_cap = other.v_cap;
-        v_size = other.v_size;
-        ptr = other.ptr;
-        other.v_cap = 0;
-        other.v_size = 0;
-        other.ptr = nullptr;
+        return ptr[index];
     }
-    return *this;
-}
 
-//COPY ASSIGNMENT
-template <typename T>
-MyVector<T>& MyVector<T>::operator=(const MyVector& other)    
-{
-    if (this != &other)
+    //MOVE ASSIGNMENT
+    template <typename T>
+    MyVector<T>& MyVector<T>::operator=(MyVector&& other)     
     {
-        delete[] ptr;
-        v_cap = other.v_cap;
-        v_size = other.v_size;
-        ptr = new T[v_cap];
-        for (size_t i = 0; i < v_size; ++i)
+        if (this != &other) 
         {
-            ptr[i] = other.ptr[i];
+            delete[] ptr;
+            v_cap = other.v_cap;
+            v_size = other.v_size;
+            ptr = other.ptr;
+            other.v_cap = 0;
+            other.v_size = 0;
+            other.ptr = nullptr;
         }
+        return *this;
     }
-    return *this;
-}
 
-//OSTREAM OPERATOR
-template <typename T>
-std::ostream& operator<<(std::ostream& os,MyVector<T>& obj) 
-{
-    for (int i = 0; i < obj.size(); ++i)
+    //COPY ASSIGNMENT
+    template <typename T>
+    MyVector<T>& MyVector<T>::operator=(const MyVector& other)    
     {
-        os << obj[i];
-        if (i < obj.size() - 1)
+        if (this != &other)
         {
-            os << " ";
+            delete[] ptr;
+            v_cap = other.v_cap;
+            v_size = other.v_size;
+            ptr = new T[v_cap];
+            for (size_t i = 0; i < v_size; ++i)
+            {
+                ptr[i] = other.ptr[i];
+            }
         }
+        return *this;
     }
-    os << std::endl;
-    return os;
-}
+
+    //OSTREAM OPERATOR
+    template <typename T>
+    std::ostream& operator<<(std::ostream& os,MyVector<T>& obj) 
+    {
+        for (int i = 0; i < obj.size(); ++i)
+        {
+            os << obj[i];
+            if (i < obj.size() - 1)
+            {
+                os << " ";
+            }
+        }
+        os << std::endl;
+        return os;
+    }
+
 
 //***METHODS***
 
@@ -265,13 +265,31 @@ T& MyVector<T>::at(int pos)
 template <typename T>
 T& MyVector<T>::front()
 {
-    return ptr[0];
+    if(v_size)
+    {
+        return ptr[0];
+    }
+
+    else
+    {
+        std::cout << "unvalid operation: " << std::endl;
+        exit(0);
+    }
 }
 
 template <typename T>
 T& MyVector<T>::back()
 {
-    return ptr[v_size - 1];
+    if(v_size)
+    {
+        return ptr[v_size - 1];
+    }
+
+    else
+    {
+        std::cout << "unvalid operation: " << std::endl;
+        exit(0);
+    }
 }
 
 template <typename T>
@@ -447,7 +465,7 @@ void MyVector<T>::swap(MyVector& x)
 }
 
 
-/////////////BITVECTOR//////////////
+////////////////////////BITVECTOR/////////////////////////
 
 //**CONSTRUCTORS**
 
@@ -459,6 +477,81 @@ MyVector<bool>::MyVector()
     v_cap = 0;
 }
 
+//PARAMETRIZED CONSTRUCTOR
+MyVector<bool>::MyVector(bool value , size_t quantity)
+{
+    v_size = quantity;
+    if(quantity / BITCOUNT)
+    {
+        v_cap = (quantity / BITCOUNT) + 1;
+    }
+
+    else
+    {
+        v_cap = quantity / BITCOUNT;
+    }
+
+    ptr = new size_t [v_cap];
+
+    if(value)
+    {
+        for(size_t i = 0 ; i < quantity; ++i)
+        {
+            ptr[i / BITCOUNT] |= 1ULL << (i % BITCOUNT);
+        }
+    }  
+}
+
+//INITIALIZER LIST CONSTRUCTOR
+MyVector<bool>::MyVector(std::initializer_list<bool> list)
+{
+    v_size = list.size();
+    if(v_size / BITCOUNT)
+    {
+        v_cap = (v_size / BITCOUNT) + 1;
+    }
+    else
+    {
+        v_cap = v_size / BITCOUNT;
+    }
+
+    ptr = new size_t[v_cap];
+
+    size_t i = 0;
+    for (const bool value : list) 
+    {
+        if (value) {
+            ptr[i / BITCOUNT] |= (1ULL << (i % BITCOUNT));
+        }
+        ++i;
+    }
+}
+
+//COPY CONSTRUCTOR
+MyVector<bool>::MyVector(const MyVector<bool>& other)
+:v_size(other.v_size) , v_cap(other.v_cap) , user_cap(other.v_cap * BITCOUNT)
+{
+    ptr = new size_t[v_cap]();
+
+    for(size_t i = 0 ; i < v_size; ++i)
+    {
+        if (other.ptr[i / BITCOUNT] & (1ULL << (i % BITCOUNT))) 
+        {
+            ptr[i / BITCOUNT] |= (1ULL << (i % BITCOUNT));
+        }    
+    }
+}
+
+//MOVE CONSTRUCTOR
+MyVector<bool>::MyVector(MyVector<bool>&& other)
+:v_size(other.v_size), v_cap(other.v_cap) , user_cap(v_cap * BITCOUNT)
+{
+    ptr = other.ptr;
+    other.ptr = nullptr;
+    other.v_size = 0;
+    other.v_cap = 0;
+}
+
 //DESTRUCTOR
 MyVector<bool>::~MyVector()
 {
@@ -468,10 +561,19 @@ MyVector<bool>::~MyVector()
     }
 }
 
-//***OPERATORS***
+
+//**REFERENCES**
+
+//REFERENCE CONSTRUCTOR
+MyVector<bool>::reference::reference(size_t* ptr , size_t index1)
+:r_ptr(ptr) , index(index1)
+{
+    value = r_ptr[index1/BITCOUNT] & (1 << index1 % BITCOUNT);
+}
 
 
-//***METHODS***
+
+//**METHODS**
 
 void MyVector<bool>::allocator()
 {
@@ -498,8 +600,8 @@ void MyVector<bool>::push_back(bool val)
         delete[] ptr;
         ptr = ptr1;
         ptr1 = nullptr;
-        v_cap *= 2;
-        user_cap = v_cap;
+        v_cap ++;
+        user_cap = v_cap * BITCOUNT;
     }
 
     if (val) 
@@ -507,15 +609,14 @@ void MyVector<bool>::push_back(bool val)
         size_t x = 1 << (v_size % BITCOUNT);
         ptr[v_size / BITCOUNT] |= x;
     }
-
     v_size++;
 };
 
 void MyVector<bool>::print()
 {
-    size_t x = 1 << (BITCOUNT - 1);
+    size_t x = 1ULL << (BITCOUNT - 1);
 
-    for (size_t i = v_size; i > 0; --i) 
+    for (size_t i = 1; i <= v_size; ++i) 
     {
         size_t index = (i - 1) / BITCOUNT;
         size_t offset = (i - 1) % BITCOUNT;
@@ -525,7 +626,7 @@ void MyVector<bool>::print()
     std::cout << std::endl;
 }
 
-size_t MyVector<bool>::size()
+size_t MyVector<bool>::size() const
 {
     return v_size;
 }
@@ -543,11 +644,6 @@ size_t MyVector<bool>::capacity()
 bool MyVector<bool>::empty() 
 {
     return v_size == 0;
-}
-
-void MyVector<bool>::shrink_to_fit() 
-{
-    user_cap = v_size;
 }
 
 void MyVector<bool>::pop_back()
@@ -629,4 +725,123 @@ void MyVector<bool>::insert(int pos , bool val)
     ptr[index] |= (val ? x : 0);
 
     ++v_size;
+}
+
+size_t& MyVector<bool>::at(int pos)
+{
+    if(pos < v_size && pos >= 0) 
+    {
+        return ptr[pos];
+    }
+
+    else
+    {
+        std::cout << "unvalid operation: " <<std::endl;
+        exit(0);
+    }
+}
+
+size_t& MyVector<bool>::front()
+{
+
+    if(v_size)
+    {
+        return ptr[0];
+    }
+
+    else
+    {
+        std::cout << "unvalid operation: " << std::endl;
+        exit(0);
+    }
+}
+
+size_t& MyVector<bool>::back()
+{
+    if(v_size)
+    {
+        return ptr[v_size - 1];
+    }
+
+    else
+    {
+        std::cout << "unvalid operation: " << std::endl;
+        exit(0);
+    }
+}
+
+void MyVector<bool>::swap(MyVector<bool>& obj)
+{
+    std::swap(this -> ptr , obj.ptr);
+    std::swap(this -> v_cap , obj.v_cap);
+    std::swap(this -> v_size , obj.v_size);
+    std::swap(this -> user_cap , obj.user_cap);
+}
+
+void MyVector<bool>::clear()
+{
+    if(ptr)
+    {
+        delete[] ptr;
+        v_size = 0;
+        v_cap = 0;
+        user_cap = 0;
+    }
+}
+
+size_t* MyVector<bool>::data()
+{
+    return ptr;
+}
+
+
+
+//**OPERATORS**
+
+//SUBSCRIPT OPERATOR FOR BOOLVECTOR
+MyVector<bool>::reference MyVector<bool>::operator[](size_t index1)
+{
+    return MyVector<bool>::reference(ptr,index1);
+}
+
+//BOOL CAST OVERLOADING FOR REFERENCE
+MyVector<bool>::reference::operator bool()
+{
+    return value;
+}
+
+//ASSIGNMENT FOR OBJECT
+MyVector<bool>::reference& MyVector<bool>::reference::operator=(const reference& obj)
+{
+    if(value != obj.value)
+    {
+        this -> r_ptr[index / BITCOUNT] ^= 1ULL << (index % BITCOUNT);
+    }
+    return *this;
+}
+
+//ASSIGNMENT FOR BOOL VARIABLE
+MyVector<bool>::reference& MyVector<bool>::reference::operator=(bool value)
+{
+    if(this -> value != value)
+    {
+        this -> r_ptr[index / BITCOUNT] ^= 1ULL << (index % BITCOUNT);
+    }
+    return *this;
+}
+
+//OUTPUT STREAM OPERATOR
+std::ostream& operator<<(std::ostream& os,  const MyVector<bool>& obj)
+{
+    size_t size = obj.size();
+    for (size_t i = 0; i < obj.size(); ++i)
+        {
+            os << (obj.ptr[i] & (1ULL << (i % BITCOUNT)));
+            if (i < obj.size() - 1)
+            {
+                os << " ";
+            }
+        } 
+        os << std::endl;
+        return os;
 }
