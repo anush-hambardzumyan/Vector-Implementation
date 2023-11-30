@@ -51,53 +51,76 @@ class MyVector
 };
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const MyVector<T>& obj);
+std::ostream& operator<<(std::ostream&, const MyVector<T>&);
 
 
 
-/////////////////////////BITVECTOR//////////////////////
+/////////////////////////BITVECTOR//////////////////////////////
 
 template <>
 class MyVector<bool>
 {
     public:
+       friend std::ostream& operator<<(std::ostream& , const MyVector<bool>&);
     //CONSTRUCTORS AND DESTRUCTOR
-        MyVector(); 
-        MyVector(bool, size_t);
-        MyVector(std::initializer_list<bool> list);
-        MyVector(const MyVector& other);
-        MyVector(MyVector&& other);
-        ~MyVector();
+        MyVector();   //done
+        MyVector(bool, size_t);   //done
+        MyVector(std::initializer_list<bool>);  //done
+        MyVector(const MyVector&);  //done
+        MyVector(MyVector&&);  //done
+        ~MyVector();   //done
 
-//METHODS
-        void print(); 
-        void allocator();
-        size_t size();
-        int max_size();
-        void resize(size_t);
-        size_t capacity();
-        bool empty();
-        void reserve(size_t);
+    //METHODS
+        void print(); //done
+        void allocator();  //done
+        size_t size() const; //done
+        int max_size(); //done
+        void resize(size_t);        
+        size_t capacity();  //done
+        bool empty();  //done
+        void reserve(size_t);  //done 
         void shrink_to_fit();
-        size_t& at(int);
-        size_t& front();
-        size_t& back();
-        size_t* data();
-        void push_back(bool);
-        void pop_back();
-        void insert(int,bool);
-        void erase(int);
-        void clear();
-        void emplace(int,bool);
-        void emplace_back(bool);
-
+        size_t& at(int);  //done
+        size_t& front();  //done
+        size_t& back();  //done
+        size_t* data();   //done
+        void push_back(bool);  //done
+        void pop_back();   //done
+        void insert(int,bool);  //done
+        void erase(int);  
+        void clear();    //done
+        void swap(MyVector<bool>&);   //done
+        
     private:
-//MEMBERS
+    //MEMBERS
         size_t v_size;
         size_t v_cap;
         size_t user_cap;
         size_t* ptr;
+
+    public:
+        class reference
+        {
+            public:
+            reference(size_t* , size_t ); //done
+            reference(const reference&); 
+            reference& operator=(const reference&);  //done
+            reference& operator=(bool);  //done
+            operator bool();
+
+            private:
+            size_t* r_ptr;
+            size_t index;
+            bool value; 
+        };
+
+        
+
+    public:
+    reference operator[](size_t);  //done
 };
+
+std::ostream& operator<<(std::ostream&  os, const MyVector<bool>& obj);
 
 #include "implementations.hpp"
 
