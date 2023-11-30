@@ -1,5 +1,4 @@
 # Vector-Implementation
-Vector Implementation using class and templates, without usage of header files.
 
 Vector is a one-dimensional data structure and all of its elements are of the same data type. Previously I implemented a vector using struct and it was implemented only for an int data type. This implementation gives us wider opportunities because of usage of templates in it. Usage of templates made my implementation more flexible for many data types, and now we are not used to only use int data type. Now it's almost equal implementation to vector of standard library, just with less methods.
 I implemented constructors, operators and methods that work similar to std::vector.
