@@ -1,73 +1,81 @@
 # Vector-Implementation
-Vector Implementation using class and templates, with usage of header files.
 
-Vector is a one-dimensional data structure and all of its elements are of the same data type. Previously I implemented a vector using struct and it was implemented only for an int data type. This implementation gives us wider opportunities because of usage of templates in it. Usage of templates made my implementation more flexible for many data types, and now we are not used to only use int data type. Now it's almost equal implementation to vector of standard library, just with less methods.
-I implemented constructors, operators and methods that work similar to std::vector.
+In C++, a vector is a dynamic array, meaning that its size can grow or shrink as needed during program execution. Vectors are part of the C++ Standard Template Library (STL). This implementation gives us wide opportunities because of usage of templates in it. Usage of templates made implementation more flexible for many data types. 
 
-Constructors:
-1.Default Constructor
-2.Parametrized Constructor 
-3.Initialaizer List Constructor
-4.Copy Constructor
-5.Move Constructor
+![IMG_1825 3](https://github.com/anush-hambardzumyan/Vector-Implementation/assets/66312436/29efc6eb-ba9a-45c0-a4b6-f97839a758df)
 
-Opeartors:
-1.Subscript operator ([])
-2.Copy Assignment (=)
-3.Move Assignment (=)
-3.Output Stream Operator (<<)
 
-Implemented Methods:
-1.size
-2.max_size
-3.resize
-4.capacity
-5.empty
-6.reserve
-7.shrink_to_fit
-8.at
-9.front
-10.back
-11.data
-12.push_back
-13.pop_back
-14.insert
-15.erase
-16.clear
-17.emplace
-18.emplace_back
+As I tried to make my vector very similar to std::vector, I also added an iterators class, and methods that were implemented with iterators in std::vector, are implemented with my self-made iterators in this implementation.
 
-Also a specialization for bool vector was added. This specialization lets us optimase memory usage for bool vectors. For realisation of that I made another class for bool vector , and it needed another nested class "reference" for operators of bool vector.
-So here is the list of bool vector -->
+Here is the list of implemented
 
-Constructors:
-1.Default Constructor
-2.Parametrized Constructor 
-3.Initialaizer List Constructor
-4.Copy Constructor
-5.Move Constructor
+### **Constructors:**  
+* Default Constructor
+* Parametrized Constructor
+* Initialaizer List Constructor
+* Copy Constructor
+* Move Constructor  
 
-Opeartors:
-1.Subscript operator ([])
-2.Copy Assignment (=)
-3.Move Assignment (=)
-3.Output Stream Operator (<<)
+### **Opeartors:**  
+* Subscript operator ([])  
+* Copy Assignment (=)  
+* Move Assignment (=)  
+* Output Stream Operator (<<)  
 
-Methods:
-1.size
-2.max_size
-3.capacity
-4.empty
-5.reserve
-6.at
-7.front
-8.back
-9.data
-10.push_back
-11.pop_back
-12.insert
-13.clear
+### **Methods:**  
+* size
+* max_size  
+* resize  
+* capacity  
+* empty   
+* reserve  
+* shrink_to_fit  
+* at  
+* front   
+* back  
+* data   
+* push_back  
+* pop_back  
+* insert  
+* erase  
+* clear  
+* emplace   
+* emplace_back  
+* swap  
+
+______
+
+Quite important was exploring the work of std::vector<bool> specialization, that works absouloutly different way, then with the other data types.I made a bool vector specialization that works the exactly the same way, as the STL's vector. For realisation of that I made another class for bool vector , and it needed another nested class "reference" for getting access to elements of bool vector with subscript operator like the int vector and etc.
+![9eccf7ce-1cb3-403c-a604-01dbad1f9fe9](https://github.com/anush-hambardzumyan/Vector-Implementation/assets/66312436/6d6e3aaf-a067-41c2-9917-49413113c93d)
+
+
+### **Constructors for boolvector:**  
+* Default Constructor  
+* Parametrized Constructor   
+* Initialaizer List Constructor   
+* Copy Constructor   
+* Move Constructor   
+
+### **Opeartors:**  
+* Subscript operator ([])
+* Copy Assignment (=)
+* Move Assignment (=)
+* Output Stream Operator (<<)  
+
+### **Methods:**    
+* size
+* max_size
+* capacity
+* empty
+* reserve
+* at
+* front
+* back
+* data
+* push_back
+* pop_back
+* insert
+* clear  
 
 
 Important to note, that in standard library many of this methods are overloaded, but for now I just wrote unique versions of them. Some of methods may be a little modificated, because of my humble knowledge in programming, but i tried to save the idea of how they work in original version.
-Hope you like it :)
