@@ -1,145 +1,150 @@
 #include "prototypes.hpp"
 
+//enum for boolvec
 enum noname {BITCOUNT = sizeof(size_t) * 8};
+
 
 //***CONSTRUCTORS***
 
-    //DEFAULT CONSTRUCTOR
-    template <typename T> 
-    MyVector<T>::MyVector() 
+//DEFAULT CONSTRUCTOR
+template <typename T> 
+MyVector<T>::MyVector() 
+{
+    v_size = 0;
+    v_cap = 10;
+    ptr = nullptr;
+}
+
+//DESTRUCTOR
+template <typename T>
+MyVector<T>::~MyVector()
+{
+    if(ptr != nullptr)
     {
-        v_size = 0;
-        v_cap = 10;
-        ptr = nullptr;
+        delete[] ptr;
     }
+}
 
-    //DESTRUCTOR
-    template <typename T>
-    MyVector<T>::~MyVector()
+//PARAMETERIZED CONSTRUCTOR
+template <typename T>
+MyVector<T>::MyVector(T val, size_t quantity)
+{
+    v_size = quantity;
+    v_cap = v_size;
+    ptr = new T[v_size];
+    for(int i = 0; i < v_size; ++i)
     {
-        if(ptr != nullptr)
-        {
-            delete[] ptr;
-        }
+        ptr[i] = val;
     }
+}
 
-    //PARAMETERIZED CONSTRUCTOR
-    template <typename T>
-    MyVector<T>::MyVector(T val, size_t quantity)
+//INITIALIZER LIST CONSTRUCTOR
+template <typename T>
+MyVector<T>::MyVector(std::initializer_list<T> list)
+{
+    v_size = list.size();
+    v_cap = v_size;
+    ptr = new T[v_cap];  
+
+    for (size_t i = 0; i < v_size; ++i)
     {
-        v_size = quantity;
-        v_cap = v_size;
-        ptr = new T[v_size];
-        for(int i = 0; i < v_size; ++i)
-        {
-            ptr[i] = val;
-        }
+        ptr[i] = *(list.begin() + i);
     }
+}
 
-    //INITIALIZER LIST CONSTRUCTOR
-    template <typename T>
-    MyVector<T>::MyVector(std::initializer_list<T> list)
+//MOVE CONSTRUCTOR
+template <typename T>
+MyVector<T>::MyVector(MyVector&& list)
+{
+    v_size = list.size();
+    v_cap = list.capacity();
+    ptr = new T [v_cap];
+    for(int i = 0; i < v_size; ++i)
     {
-        v_size = list.size();
-        v_cap = v_size;
-        ptr = new T[v_cap];  
-
-        for (size_t i = 0; i < v_size; ++i)
-        {
-            ptr[i] = *(list.begin() + i);
-        }
+        ptr[i] = list[i];
     }
+    list.v_size = 0;
+    list.v_cap = 0;
+    delete[] list.ptr;
+    list.ptr = nullptr;
+}
 
-    //MOVE CONSTRUCTOR
-    template <typename T>
-    MyVector<T>::MyVector(MyVector&& list)
+//COPY CONSTRUCTOR
+template <typename T>
+MyVector<T>::MyVector(const MyVector& other)
+{
+    v_size = other.v_size;
+    v_cap = other.v_cap;
+    ptr = new T[v_cap];
+    for (size_t i = 0; i < v_size; ++i)
     {
-        v_size = list.size();
-        v_cap = list.capacity();
-        ptr = new T [v_cap];
-        for(int i = 0; i < v_size; ++i)
-        {
-            ptr[i] = list[i];
-        }
-        list.v_size = 0;
-        list.v_cap = 0;
-        delete[] list.ptr;
-        list.ptr = nullptr;
+        ptr[i] = other.ptr[i];
     }
+}
 
-    //COPY CONSTRUCTOR
-    template <typename T>
-    MyVector<T>::MyVector(const MyVector& other)
+
+
+
+
+//***OPERATORS***
+
+//SUBSCRIPT OPERATOR
+template <typename T>
+T& MyVector<T>::operator[] (int index)
+{
+    return ptr[index];
+}
+
+//MOVE ASSIGNMENT
+template <typename T>
+MyVector<T>& MyVector<T>::operator=(MyVector&& other)     
+{
+    if (this != &other) 
     {
-        v_size = other.v_size;
+        delete[] ptr;
         v_cap = other.v_cap;
+        v_size = other.v_size;
+        ptr = other.ptr;
+        other.v_cap = 0;
+        other.v_size = 0;
+        other.ptr = nullptr;
+    }
+    return *this;
+}
+
+//COPY ASSIGNMENT
+template <typename T>
+MyVector<T>& MyVector<T>::operator=(const MyVector& other)    
+{
+    if (this != &other)
+    {
+        delete[] ptr;
+        v_cap = other.v_cap;
+        v_size = other.v_size;
         ptr = new T[v_cap];
         for (size_t i = 0; i < v_size; ++i)
         {
             ptr[i] = other.ptr[i];
         }
     }
+    return *this;
+}
 
-
-//***OPERATORS***
-
-    //SUBSCRIPT OPERATOR
-    template <typename T>
-    T& MyVector<T>::operator[] (int index)
+//OSTREAM OPERATOR
+template <typename T>
+std::ostream& operator<<(std::ostream& os,MyVector<T>& obj) 
+{
+    for (int i = 0; i < obj.size(); ++i)
     {
-        return ptr[index];
-    }
-
-    //MOVE ASSIGNMENT
-    template <typename T>
-    MyVector<T>& MyVector<T>::operator=(MyVector&& other)     
-    {
-        if (this != &other) 
+        os << obj[i];
+        if (i < obj.size() - 1)
         {
-            delete[] ptr;
-            v_cap = other.v_cap;
-            v_size = other.v_size;
-            ptr = other.ptr;
-            other.v_cap = 0;
-            other.v_size = 0;
-            other.ptr = nullptr;
+            os << " ";
         }
-        return *this;
     }
-
-    //COPY ASSIGNMENT
-    template <typename T>
-    MyVector<T>& MyVector<T>::operator=(const MyVector& other)    
-    {
-        if (this != &other)
-        {
-            delete[] ptr;
-            v_cap = other.v_cap;
-            v_size = other.v_size;
-            ptr = new T[v_cap];
-            for (size_t i = 0; i < v_size; ++i)
-            {
-                ptr[i] = other.ptr[i];
-            }
-        }
-        return *this;
-    }
-
-    //OSTREAM OPERATOR
-    template <typename T>
-    std::ostream& operator<<(std::ostream& os,MyVector<T>& obj) 
-    {
-        for (int i = 0; i < obj.size(); ++i)
-        {
-            os << obj[i];
-            if (i < obj.size() - 1)
-            {
-                os << " ";
-            }
-        }
-        os << std::endl;
-        return os;
-    }
+    os << std::endl;
+    return os;
+}
 
 
 //***METHODS***
@@ -252,7 +257,9 @@ T& MyVector<T>::at(int pos)
 {
     if(pos < v_size && pos >= 0)  //check for the element existence
     {
-        return ptr[pos];
+        iterator it(ptr);
+        it = it + pos;
+        return *it;
     }
 
     else
@@ -339,9 +346,9 @@ void MyVector<T>::pop_back()
 }
 
 template <typename T>
-void MyVector<T>::insert(int pos, T val)
+void MyVector<T>::insert(iterator pos, const T& val)
 {
-    if(pos < 0 || pos > v_size - 1)
+    if(pos < this -> begin() || pos > end() - 1)
     {
         std::cout << "unvalid operation: " << std::endl;  //checking if the given position is valid for insertion
         return;
@@ -350,15 +357,20 @@ void MyVector<T>::insert(int pos, T val)
     else
     {
         int *ptrr = new int [++v_cap];
-        for (int i = 0; i < pos; ++i)
+        iterator p(ptrr);
+        iterator it(ptr);
+        for (; it < pos; ++it)
         {
-            ptrr[i] = ptr[i];
+            *p = *it;
+            ++p;
         }
-        ptrr[pos] = val;            //inserting the element in right position
+        *p = val;
+        ++p;            //inserting the element in right position
 
-        for (int j = pos; j < v_size; ++j) 
+        for (; it < this -> end(); ++it) 
         {
-            ptrr[j + 1] = ptr[j];
+            *p = *it;
+            ++p;
         }
 
         delete[] ptr;
@@ -369,33 +381,24 @@ void MyVector<T>::insert(int pos, T val)
 }
 
 template <typename T>
-void MyVector<T>::erase(int pos) 
+void MyVector<T>::erase(iterator pos)
 {
-    if (v_size != 0 && pos >= 0 && pos < v_size)  // Checking if the given position is valid for erasing an element
+    if (pos < this->begin() || pos >= this->end())
     {
-        T* ptrr = new T[v_size - 1];
-        for (int i = 0; i < pos; ++i) 
-        {
-            ptrr[i] = ptr[i];
-        }
-
-        for (int i = pos + 1; i < v_size; ++i) 
-        {
-            ptrr[i - 1] = ptr[i];  // Ignoring the element at the given position, so it gets erased
-        }
-
-        delete[] ptr;
-        ptr = ptrr;
-        ptrr = nullptr;
-        --v_size;
-    } 
-
-    else 
-    {
-        std::cout << "Invalid operation: " << std::endl;
-        exit(0);
+        std::cout << "unvalid operation: "<< std::endl;
+        return;
     }
+
+    iterator it = pos;
+    ++it;
+
+    for (; it < this->end(); ++pos, ++it)
+    {
+        *pos = *it;
+    }
+    --v_size;
 }
+
 
 template <typename T>
 void MyVector<T>::clear()
@@ -462,6 +465,143 @@ void MyVector<T>::swap(MyVector& x)
     std::swap(this -> ptr , x.ptr);
     std::swap(this -> v_size , x.v_size);
     std::swap(this -> v_cap , x.v_cap);
+}
+
+
+//////////////****ITERATORS****
+template <typename T>
+T& MyVector<T>::iterator::operator*()
+{
+    return *ptr;
+}
+
+template <typename T>
+T* MyVector<T>::iterator::operator ->()
+{
+    return ptr;
+}
+
+template <typename T>
+typename MyVector<T>::iterator& MyVector<T>::iterator::operator=(const iterator& obj)
+{
+    this -> ptr = obj.ptr;
+    return *this;
+}
+
+template <typename T>
+typename MyVector<T>::iterator& MyVector<T>::iterator::operator++()     //prefix
+{
+    ++ptr;
+    return *this;
+}
+
+template <typename T>
+typename MyVector<T>::iterator& MyVector<T>::iterator::operator--()      //prefix
+{
+    --ptr;
+    return *this;
+}
+
+template <typename T>
+typename MyVector<T>::iterator MyVector<T>::iterator::operator++(int)    //postfix
+{
+    iterator tmp = *this;
+    ++ptr;
+    return tmp;
+}
+
+template <typename T> 
+typename MyVector<T>::iterator MyVector<T>::iterator::operator--(int)    //postfix
+{
+    iterator tmp = *this;
+    --ptr;
+    return tmp;
+}
+
+template <typename T>
+typename MyVector<T>::iterator MyVector<T>::iterator::operator +(unsigned int n)
+{
+    iterator t = *this;
+    for(int i = 0; i < n; ++i)
+    {
+        ++t;
+    }
+    return t;
+}
+
+template <typename T>
+typename MyVector<T>::iterator& MyVector<T>::iterator::operator += (unsigned int n)
+{
+    for(int i = 0; i < n ; ++i)
+    {
+        ++(*this);
+    }
+    return *this;
+}
+
+template <typename T>
+typename MyVector<T>::iterator MyVector<T>::iterator::operator - (unsigned int n)
+{
+    iterator t = *this;
+    for(int i = 0; i < n; ++i)
+    {
+        --t;
+    }
+    return t;
+}
+
+template <typename T>
+typename MyVector<T>::iterator& MyVector<T>::iterator::operator -= (unsigned int n)
+{
+    for(int i = 0; i < n ; ++i)
+    {
+        --(*this);
+    }
+    return *this;
+}
+
+template <typename T>
+bool MyVector<T>::iterator::operator == (const MyVector<T>::iterator& other)
+{
+    return this -> ptr == other.ptr;
+}
+
+template <typename T>
+bool MyVector<T>::iterator::operator != (const MyVector<T>::iterator& other)
+{
+    return !(this -> ptr == other.ptr);
+} 
+
+template <typename T>
+bool MyVector<T>::iterator::operator > (const MyVector<T>::iterator& other)
+{
+    return (this -> ptr) > other.ptr;
+}
+
+template <typename T>
+bool MyVector<T>::iterator::operator < (const MyVector<T>::iterator& other)
+{
+    return (this -> ptr) < other.ptr;
+}
+
+template <typename T>
+bool MyVector<T>::iterator::operator >= (const MyVector<T>::iterator& other)
+{
+    return (this -> ptr) >= other.ptr;
+}
+
+template <typename T>
+bool MyVector<T>::iterator::operator <= (const MyVector<T>::iterator& other)
+{
+    return (this -> ptr) <= other.ptr;
+}
+
+template <typename T>
+T& MyVector<T>::iterator::operator[](int i)
+{
+    iterator tmp = *this;
+    tmp += i;
+    return *tmp;
 }
 
 

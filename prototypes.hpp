@@ -7,6 +7,52 @@ template <typename T>
 class MyVector
 {
     public:
+    class iterator
+    {
+        public:
+        iterator (T* ptr1) : ptr(ptr1) {}  //PARAMETRIZED CONSTRUCTOR
+        iterator () : ptr(nullptr) {}      //DEFAULT CONSTRUCTOR
+        T& operator*();
+        T* operator ->();
+        iterator& operator=(const iterator& obj);
+        iterator& operator++();     //prefix
+        iterator& operator--();      //prefix
+        iterator operator++(int);    //postfix
+        iterator operator--(int);    //postfix
+        iterator operator +(unsigned int n);
+        iterator& operator += (unsigned int n);
+        iterator operator - (unsigned int n);
+        iterator& operator -= (unsigned int n);
+        bool operator == (const iterator& other);
+        bool operator != (const iterator& other);
+        bool operator > (const iterator& other);
+        bool operator < (const iterator& other);
+        bool operator >= (const iterator& other);
+        bool operator <= (const iterator& other);
+        T& operator[](int i);
+        iterator (const iterator & other) : ptr(other.ptr) {}
+
+        private:
+        T* ptr;
+    };
+
+    iterator begin()
+    {
+        return iterator(this -> data());
+    }
+
+    iterator end()
+    {
+        return iterator(this -> data() + this -> size());
+    }
+
+    private:
+    //MEMBERS
+        size_t v_size;
+        size_t v_cap;
+        T* ptr;
+
+    public:
     //CONSTRUCTORS AND DESTRUCTOR
         MyVector();
         MyVector(T, size_t);
@@ -36,18 +82,13 @@ class MyVector
         T* data();
         void push_back(T);
         void pop_back();
-        void insert(int,T);
-        void erase(int);
+        void insert(iterator,const T&);
+        void erase(iterator pos);
         void clear();
         void emplace(int,T);
         void emplace_back(T);
         void swap(MyVector&);
 
-    private:
-    //MEMBERS
-        size_t v_size;
-        size_t v_cap;
-        T* ptr;
 };
 
 template <typename T>
@@ -113,9 +154,7 @@ class MyVector<bool>
             size_t index;
             bool value; 
         };
-
-        
-
+    
     public:
     reference operator[](size_t);  //done
 };

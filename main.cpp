@@ -2,14 +2,14 @@
 
 int main()
 {
-    MyVector<bool> vec;
-    vec.push_back(1);
-    vec.push_back(0);
-    vec.push_back(0);
-    vec.push_back(0);
-    vec.push_back(1);
-    vec.push_back(1);
-    std::cout << vec;
+    // MyVector<bool> vec;
+    // vec.push_back(1);
+    // vec.push_back(0);
+    // vec.push_back(0);
+    // vec.push_back(0);
+    // vec.push_back(1);
+    // vec.push_back(1);
+    // std::cout << vec;
     // vec.print();
     // for(size_t i = 0; i < vec.size() ; ++i)
     // {
@@ -39,4 +39,37 @@ int main()
 
     // MyVector<int> vec1(2,10);
     // MyVector<int> vec2 (4,7);
+
+    MyVector<int> vec;
+    vec.push_back(10);
+    vec.push_back(9);
+    vec.push_back(8);
+    vec.push_back(7);
+
+    MyVector<int>::iterator it;
+    for(it = vec.begin() ; it != vec.end(); ++it)
+    {
+        std::cout << *it << " " ;
+    }
+    std::cout << std::endl;
+    vec.at(1) = 2;
+    for(it = vec.begin() ; it != vec.end(); ++it)
+    {
+        std::cout << *it << " " ;
+    }
+    std::cout << std::endl;
+
+    vec.insert(vec.begin() + 1, 4);
+    for(it = vec.begin() ; it != vec.end(); ++it)
+    {
+        std::cout << *it << " " ;
+    }
+    std::cout << std::endl;
+
+    vec.erase(vec.begin() + 1);
+    for(it = vec.begin() ; it != vec.end(); ++it)
+    {
+        std::cout << *it << " " ;
+    }
+    std::cout << std::endl;
 }
