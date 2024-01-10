@@ -85,7 +85,7 @@ class MyVector
         void insert(iterator,const T&);
         void erase(iterator pos);
         void clear();
-        void emplace(int,T);
+        void emplace(iterator,const T&);
         void emplace_back(T);
         void swap(MyVector&);
 

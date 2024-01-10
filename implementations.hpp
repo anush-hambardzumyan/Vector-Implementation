@@ -85,7 +85,6 @@ MyVector<T>::MyVector(const MyVector& other)
 
 
 
-
 //***OPERATORS***
 
 //SUBSCRIPT OPERATOR
@@ -383,7 +382,7 @@ void MyVector<T>::insert(iterator pos, const T& val)
 template <typename T>
 void MyVector<T>::erase(iterator pos)
 {
-    if (pos < this->begin() || pos >= this->end())
+    if (pos < this -> begin() || pos >= this -> end())
     {
         std::cout << "unvalid operation: "<< std::endl;
         return;
@@ -392,13 +391,12 @@ void MyVector<T>::erase(iterator pos)
     iterator it = pos;
     ++it;
 
-    for (; it < this->end(); ++pos, ++it)
+    for (; it < this -> end(); ++pos, ++it)
     {
         *pos = *it;
     }
     --v_size;
 }
-
 
 template <typename T>
 void MyVector<T>::clear()
@@ -410,33 +408,9 @@ void MyVector<T>::clear()
 }
 
 template <typename T>
-void MyVector<T>::emplace(int pos, T val)
+void MyVector<T>::emplace(iterator pos,const T& val)
 {
-    if(pos < 0 || pos > v_size - 1)
-    {
-        std::cout << "unvalid operation: " << std::endl;  //checking if the given position is valid for emplacement
-        return;
-    }
-
-    else
-    {
-        int *ptrr = new int [++v_cap];
-        for (int i = 0; i < pos; ++i)
-        {
-            ptrr[i] = ptr[i];
-        }
-        ptrr[pos] = val;            //emplacing the element in right position
-
-        for (int j = pos; j < v_size; ++j) 
-        {
-            ptrr[j + 1] = ptr[j];
-        }
-
-        delete[] ptr;
-        ptr = ptrr;
-        ptrr = nullptr;
-        v_size++;
-    }
+    insert(pos,val);
 }
 
 template <typename T>
