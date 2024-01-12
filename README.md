@@ -30,27 +30,26 @@ _____
 | - Initialaizer List Constructor| - Move Assignment (=) |
 | - Copy Constructor| - Output Stream Operator (<<) |
 | - Move Constructor| |
+_______
 
+**Implemented Methods:**
+- [x] size
+- [x] max_size
+- [x] resize
+- [x] capacity
+- [x] empty
+- [x] reserve
+- [x] shrink_to_fit
+- [x] at
+- [x] front
+- [x] back
+- [x] data
+- [x] push_back
+- [x] pop_back
+- [x] insert
+- [x] erase
+- [x] clear
+- [x] emplace
+- [x] emplace_back
+- [x] swap
 
-Implemented Methods:
-1.size
-2.max_size
-3.resize
-4.capacity
-5.empty
-6.reserve
-7.shrink_to_fit
-8.at
-9.front
-10.back
-11.data
-12.push_back
-13.pop_back
-14.insert
-15.erase
-16.clear
-17.emplace
-18.emplace_back
-
-Important to note, that in standard library many of this methods are overloaded, but for now I just wrote unique versions of them. Some of methods may be a little modificated, because of my humble knowledge in programming, but i tried to save the idea of how they work in original version.
-Hope you like it :)
