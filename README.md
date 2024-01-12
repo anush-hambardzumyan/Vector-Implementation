@@ -1,21 +1,36 @@
 # Vector-Implementation
-Vector Implementation using class and templates, without usage of header files.
+**Vector** is a one-dimensional data structure and all of its elements are of the same data type. 
+Vectors are the same as dynamic arrays with the ability to resize itself automatically when an element is inserted or deleted, with their storage being handled automatically by the container. Vector elements are placed in contiguous storage so that they can be accessed and traversed using iterators. In vectors, data is inserted at the end. Inserting at the end takes differential time, as sometimes the array may need to be extended.
 
-Vector is a one-dimensional data structure and all of its elements are of the same data type. Previously I implemented a vector using struct and it was implemented only for an int data type. This implementation gives us wider opportunities because of usage of templates in it. Usage of templates made my implementation more flexible for many data types, and now we are not used to only use int data type. Now it's almost equal implementation to vector of standard library, just with less methods.
-I implemented constructors, operators and methods that work similar to std::vector.
+![ezgif-4-096e540da9](https://github.com/anush-hambardzumyan/Vector-Implementation/assets/66312436/75a13a65-e247-4978-ab39-f4cdd86d4897)
+________
+### Complexity
+**The time complexity for doing various operations on**
+| Operation | Complexity |
+| :----: | :----: | 
+| Random Access | O(1) | 
+| Insertion at the end | O(1) | 
+| Removal at the end | O(1) | 
+| Insertion  | O(n) | 
+| Removal | O(n) | 
+| Knowing the size | O(1) | 
+| Resizeing | O(n) | 
+__________
 
-Constructors:
-1.Default Constructor
-2.Parametrized Constructor 
-3.Initialaizer List Constructor
-4.Copy Constructor
-5.Move Constructor
+As I tried to make implementation similar to std::vector, I made a specialization for bool vector that works in optimized way. For that specialization I implemented special nested class to get access to the element of bool vector such as elemnts of ordinary int vector. Implementation also includes self-made and all the methods of that use iterators in STL, are working the same way in this implementation.
 
-Opeartors:
-1.Subscript operator ([])
-2.Copy Assignment (=)
-3.Move Assignment (=)
-3.Output Stream Operator (<<)
+![9eccf7ce-1cb3-403c-a604-01dbad1f9fe9](https://github.com/anush-hambardzumyan/Vector-Implementation/assets/66312436/de44a2f0-55bf-4505-af7d-8d43ca284b6d)
+
+_____
+
+| Constructors | Operators |
+| :----- | :----- | 
+| - Default Constructor| - Subscript operator ([])|
+| - Parametrized Constructor | - Copy Assignment (=)|
+| - Initialaizer List Constructor| - Move Assignment (=) |
+| - Copy Constructor| - Output Stream Operator (<<) |
+| - Move Constructor| |
+
 
 Implemented Methods:
 1.size
